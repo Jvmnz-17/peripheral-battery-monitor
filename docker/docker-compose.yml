@@ -1,0 +1,18 @@
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+  battery-monitor:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - REFRESH_SECONDS=300
+    ports:
+      - "8765:8765"
+    volumes:
+      - "${MCHOSE_CONFIG_DIR}:/data/mchose:ro"
+      - "${RAPOO_LOG_DIR}:/data/rapoo-log:ro"
